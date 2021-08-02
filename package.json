@@ -1,0 +1,23 @@
+{
+  "name": "@kobakazu0429/tiny-cache",
+  "version": "0.0.1",
+  "repository": "ssh://git@github.com/kobakazu0429/tiny-cache.git",
+  "author": "kobakazu0429 <kobakazu10@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "source": "src/index.ts",
+  "exports": "./dist/index.modern.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.module.js",
+  "unpkg": "./dist/index.umd.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "microbundle",
+    "dev": "microbundle watch"
+  },
+  "devDependencies": {
+    "microbundle": "^0.13.3",
+    "short-hash": "^1.0.0",
+    "typescript": "^4.3.5"
+  }
+}
