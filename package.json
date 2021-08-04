@@ -13,11 +13,15 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "microbundle",
-    "dev": "microbundle watch"
+    "dev": "microbundle watch",
+    "test": "jest"
   },
   "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "jest": "^27.0.6",
     "microbundle": "^0.13.3",
     "short-hash": "^1.0.0",
+    "ts-jest": "^27.0.4",
     "typescript": "^4.3.5"
   }
 }
