@@ -14,7 +14,7 @@
   "scripts": {
     "build": "microbundle",
     "dev": "microbundle watch",
-    "test": "jest"
+    "test": "jest --silent=false --verbose false"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",

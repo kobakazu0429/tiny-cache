@@ -96,7 +96,7 @@ export class Cache {
 
     // divided by 1000 is millisecond to second
     const expiration = createdAt + duration;
-    if (expiration > Date.now()) return true;
+    if (expiration > Date.now() / 1000) return true;
 
     return false;
   }
