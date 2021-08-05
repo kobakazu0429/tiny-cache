@@ -62,7 +62,7 @@ export class Cache {
   }
 
   async save(contents: string): Promise<void> {
-    this.createdAt = Date.now() / 1000;
+    this.createdAt = Date.now();
     this.cacheInMemory = contents;
     const data: CacheFile = {
       createdAt: this.createdAt,
@@ -94,9 +94,9 @@ export class Cache {
     // "-1" is infinite duration
     if (duration === -1) return true;
 
-    // divided by 1000 is millisecond to second
-    const expiration = createdAt + duration;
-    if (expiration > Date.now() / 1000) return true;
+    // multiple by 1000 is second to millisecond
+    const expiration = createdAt + duration * 1000;
+    if (expiration > Date.now()) return true;
 
     return false;
   }

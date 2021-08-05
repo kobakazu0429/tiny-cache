@@ -68,7 +68,7 @@ describe("Cache", () => {
 
       const file = vol.toJSON()[cache.cachePath] as string;
       expect(JSON.parse(file)).toStrictEqual({
-        createdAt: now / 1000,
+        createdAt: now,
         contents,
       });
 
@@ -87,7 +87,7 @@ describe("Cache", () => {
 
       const file = vol.toJSON()[cache.cachePath] as string;
       expect(JSON.parse(file)).toStrictEqual({
-        createdAt: now / 1000,
+        createdAt: now,
         contents: JSON.stringify(contents),
       });
 
@@ -113,7 +113,7 @@ describe("Cache", () => {
       Date.now = jest.fn(() => 1628043400);
       const aliveTime = 50;
       const elapsedTime = 20;
-      const createdAt = Date.now() / 1000 - elapsedTime;
+      const createdAt = Date.now() - elapsedTime * 1000;
       const cache = new Cache(HASH);
       Object.defineProperty(cache, "cacheInMemory", { value: "this_is_cache" });
       expect(cache.isCacheValid(aliveTime, createdAt)).toBeTruthy();
@@ -123,7 +123,7 @@ describe("Cache", () => {
       Date.now = jest.fn(() => 1628043400);
       const aliveTime = 50;
       const elapsedTime = 100;
-      const createdAt = Date.now() / 1000 - elapsedTime;
+      const createdAt = Date.now() - elapsedTime * 1000;
       const cache = new Cache(HASH);
       Object.defineProperty(cache, "cacheInMemory", { value: "this_is_cache" });
       expect(cache.isCacheValid(aliveTime, createdAt)).toBeFalsy();
