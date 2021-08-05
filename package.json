@@ -19,6 +19,7 @@
   "devDependencies": {
     "@types/jest": "^26.0.24",
     "jest": "^27.0.6",
+    "memfs": "^3.2.2",
     "microbundle": "^0.13.3",
     "short-hash": "^1.0.0",
     "ts-jest": "^27.0.4",

@@ -1,10 +1,17 @@
 import path from "path";
+import { vol } from "memfs";
 import { Cache } from "./../src/index";
 
 const HASH = "this_is_hash";
 const CACHE_FILE_NAME = `tiny-cache-${HASH}`;
 
+jest.mock("fs/promises");
+
 describe("Cache", () => {
+  beforeEach(() => {
+    vol.reset();
+  });
+
   test("Cache.cacheFilename", () => {
     const cache = new Cache(HASH);
     expect(cache.cacheFilename).toBe(CACHE_FILE_NAME);
@@ -46,6 +53,40 @@ describe("Cache", () => {
       );
       const cache = new Cache(HASH, { cacheDirectory });
       expect(cache.cachePath).toBe(cachePath);
+    });
+  });
+
+  describe("Cache.save", () => {
+    test("save string", async () => {
+      const now = 1628043400;
+      Date.now = jest.fn(() => now);
+
+      const cacheDirectory = "/";
+      const cache = new Cache(HASH, { cacheDirectory });
+      const contents = "this_is_string";
+      await cache.save(contents);
+
+      const savedCache = vol.toJSON()[cache.cachePath] as string;
+      expect(JSON.parse(savedCache)).toStrictEqual({
+        createdAt: now / 1000,
+        contents,
+      });
+    });
+
+    test("save JSON", async () => {
+      const now = 1628043400;
+      Date.now = jest.fn(() => now);
+
+      const cacheDirectory = "/";
+      const cache = new Cache(HASH, { cacheDirectory });
+      const contents = [{ key1: "value1" }, { key2: "value2" }];
+      await cache.save(JSON.stringify(contents));
+
+      const savedCache = vol.toJSON()[cache.cachePath] as string;
+      expect(JSON.parse(savedCache)).toStrictEqual({
+        createdAt: now / 1000,
+        contents: JSON.stringify(contents),
+      });
     });
   });
 

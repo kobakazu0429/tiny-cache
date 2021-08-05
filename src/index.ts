@@ -1,4 +1,4 @@
-import { promises } from "fs";
+import fs from "fs/promises";
 import path from "path";
 
 /**
@@ -56,25 +56,25 @@ export class Cache {
 
   async ensureDir() {
     // make cacheDirectory if it does not exist.
-    await promises.mkdir(this.options.cacheDirectory, {
+    await fs.mkdir(this.options.cacheDirectory, {
       recursive: true,
     });
   }
 
   async save(contents: string): Promise<void> {
-    this.createdAt = new Date().getTime() / 1000;
+    this.createdAt = Date.now() / 1000;
     this.cacheInMemory = contents;
     const data: CacheFile = {
       createdAt: this.createdAt,
       contents,
     };
     await this.ensureDir();
-    await promises.writeFile(this.cachePath, JSON.stringify(data), "utf-8");
+    await fs.writeFile(this.cachePath, JSON.stringify(data), "utf-8");
   }
 
   public async read(): Promise<string> {
     if (this.isCacheValid()) return this.cacheInMemory!;
-    const cacheFileRaw = await promises.readFile(this.cachePath, "utf-8");
+    const cacheFileRaw = await fs.readFile(this.cachePath, "utf-8");
     const cacheFile: CacheFile = JSON.parse(cacheFileRaw);
     return cacheFile.contents;
   }
