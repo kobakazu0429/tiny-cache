@@ -56,7 +56,7 @@ describe("Cache", () => {
     });
   });
 
-  describe("Cache.save", () => {
+  describe("Cache.save and Cache.read", () => {
     test("save string", async () => {
       const now = 1628043400;
       Date.now = jest.fn(() => now);
@@ -66,11 +66,14 @@ describe("Cache", () => {
       const contents = "this_is_string";
       await cache.save(contents);
 
-      const savedCache = vol.toJSON()[cache.cachePath] as string;
-      expect(JSON.parse(savedCache)).toStrictEqual({
+      const file = vol.toJSON()[cache.cachePath] as string;
+      expect(JSON.parse(file)).toStrictEqual({
         createdAt: now / 1000,
         contents,
       });
+
+      const savedCache = await cache.read();
+      expect(savedCache).toEqual(contents);
     });
 
     test("save JSON", async () => {
@@ -82,11 +85,14 @@ describe("Cache", () => {
       const contents = [{ key1: "value1" }, { key2: "value2" }];
       await cache.save(JSON.stringify(contents));
 
-      const savedCache = vol.toJSON()[cache.cachePath] as string;
-      expect(JSON.parse(savedCache)).toStrictEqual({
+      const file = vol.toJSON()[cache.cachePath] as string;
+      expect(JSON.parse(file)).toStrictEqual({
         createdAt: now / 1000,
         contents: JSON.stringify(contents),
       });
+
+      const savedCache = await cache.read();
+      expect(savedCache).toEqual(JSON.stringify(contents));
     });
   });
 
