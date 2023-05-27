@@ -73,16 +73,20 @@ export class Cache {
   }
 
   public async read(): Promise<string> {
-    if (this.isCacheValid()) return this.cacheInMemory!;
+    if (this.cacheInMemory) return this.cacheInMemory;
     const cacheFileRaw = await fs.readFile(this.cachePath, "utf-8");
     const cacheFile: CacheFile = JSON.parse(cacheFileRaw);
     return cacheFile.contents;
   }
 
-  public isCacheValid(
+  public async isCacheValid(
     duration: Duration = this.options.duration,
     createdAt: CreatedAt = this.createdAt
-  ): boolean {
+  ): Promise<boolean> {
+    if (await this.isCached()) {
+      return true;
+    }
+
     // not cached
     if (
       this.cacheInMemory === undefined ||
@@ -99,5 +103,13 @@ export class Cache {
     if (expiration > Date.now()) return true;
 
     return false;
+  }
+
+  public async isCached(): Promise<boolean> {
+    try {
+      return (await fs.lstat(this.cachePath)).isFile();
+    } catch (_e) {
+      return false;
+    }
   }
 }

@@ -97,36 +97,53 @@ describe("Cache", () => {
   });
 
   describe("Cache.isCacheValid", () => {
-    test("not cached", () => {
+    test("not cached", async () => {
       const cache = new Cache(HASH);
-      expect(cache.isCacheValid()).toBeFalsy();
+      expect(await cache.isCacheValid()).toBeFalsy();
     });
 
-    test("infinite cache", () => {
+    test("infinite cache", async () => {
       const cache = new Cache(HASH);
       Object.defineProperty(cache, "cacheInMemory", { value: "this_is_cache" });
       Object.defineProperty(cache, "createdAt", { value: 1 });
-      expect(cache.isCacheValid(-1)).toBeTruthy();
+      expect(await cache.isCacheValid(-1)).toBeTruthy();
     });
 
-    test("not expire", () => {
+    test("not expire", async () => {
       Date.now = jest.fn(() => 1628043400);
       const aliveTime = 50;
       const elapsedTime = 20;
       const createdAt = Date.now() - elapsedTime * 1000;
       const cache = new Cache(HASH);
       Object.defineProperty(cache, "cacheInMemory", { value: "this_is_cache" });
-      expect(cache.isCacheValid(aliveTime, createdAt)).toBeTruthy();
+      expect(await cache.isCacheValid(aliveTime, createdAt)).toBeTruthy();
     });
 
-    test("expire", () => {
+    test("expire", async () => {
       Date.now = jest.fn(() => 1628043400);
       const aliveTime = 50;
       const elapsedTime = 100;
       const createdAt = Date.now() - elapsedTime * 1000;
       const cache = new Cache(HASH);
       Object.defineProperty(cache, "cacheInMemory", { value: "this_is_cache" });
-      expect(cache.isCacheValid(aliveTime, createdAt)).toBeFalsy();
+      expect(await cache.isCacheValid(aliveTime, createdAt)).toBeFalsy();
+    });
+  });
+
+  describe("Cache.isCached", () => {
+    test("not cached", async () => {
+      const cache = new Cache(HASH);
+      const isCached = await cache.isCached();
+      expect(isCached).toBeFalsy();
+    });
+
+    test("cached", async () => {
+      const cache = new Cache(HASH);
+      const contents = "this_is_string";
+      await cache.save(contents);
+
+      const isCached = await cache.isCached();
+      expect(isCached).toBeTruthy();
     });
   });
 });
